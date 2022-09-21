@@ -38,7 +38,8 @@
             </div>
             <!-- 第二行的按钮区域 -->
             <div class="row2">
-                <button type="button" class="layui-btn">上传</button>
+                <input type="file" id="file" accept="image/jpg,image/png,image/jpeg">
+                <button type="button" class="layui-btn" id="btnChoose">上传</button>
                 <button type="button" class="layui-btn layui-btn-danger">确定</button>
             </div>
         </div>
@@ -46,7 +47,7 @@
 
 
     <!-- 导入 layui  的js -->
-    <!-- <script src="../assets/lib/layui/layui.all.js"></script> -->
+    <script src="../assets/lib/layui/layui.all.js"></script>
 
     <!-- 有先后之分 必须先导入 jQuery文件 再导入 cropper.js 文件 最后导入 cropper.jQuery 文件 -->
 
