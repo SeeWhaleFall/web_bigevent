@@ -19,7 +19,7 @@ $(function(){
             url : '/my/userinfo',
             success : res => {
                 if(res.status !== 0) return layer.msg('获取用户信息失败！')
-                console.log(res)
+                // console.log(res)
                 // 用 form.val 为表单快速复赋值
                 form.val('formUserInfo',res.data)
                 
