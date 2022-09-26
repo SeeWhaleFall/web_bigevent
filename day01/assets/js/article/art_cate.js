@@ -12,7 +12,7 @@ $(function () {
         if (res.status !== 0) return layer.msg('获取文章列表失败！')
         console.log(res)
         let htmlStr = template('tpl-table', res)
-        $('#tb').append(htmlStr)
+        $('#tb').html(htmlStr)
       }
     })
   }
@@ -51,12 +51,12 @@ $(function () {
   })
 
   let indexEdit = null
-  // 通过代理的方式 为编辑按钮 添加 点击事件
+  // 通过代理的方式 为添加按钮 添加 点击事件
   $('#tb').on('click','#btn-edit',function(){
-    indexAdd = layer.open({
+    indexEdit = layer.open({
       type : 1 ,
       area : ['500px','250px'],
-      title: '添加文章分类',
+      title: '编辑文章分类',
       content: $('#dialog-edit').html()
     })
     

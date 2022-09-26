@@ -13,7 +13,7 @@ $(function () {
         let hh = (dt.getHours() + '').padStart(2, '0')
         let mm = (dt.getMinutes() + '').padStart(2, '0')
         let ss = (dt.getSeconds() + '').padStart(2, '0')
-        console.log(`${y}-${m}-${d} ${hh}:${mm}:${ss}`)
+        // console.log(`${y}-${m}-${d} ${hh}:${mm}:${ss}`)
         return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
     }
 
@@ -50,39 +50,107 @@ $(function () {
 
 
     // 初始化文章分类的方法
-    function initCate() {
-        $.ajax({
-            method: 'GET',
-            url: '/my/article/cates',
-            success: res => {
-                // console.log(res)
-                if (res.status !== 0) return layer.msg('获取分类数据失败')
+//     function initCate() {
+//         $.ajax({
+//             method: 'GET',
+//             url: '/my/article/cates',
+//             success: res => {
+//                 // console.log(res)
+//                 if (res.status !== 0) return layer.msg('获取分类数据失败')
 
-                // 调用模板引擎渲染分类的可选项
-                let htmlStr = template('tpl-cate', res)
-                // console.log(htmlStr)
-                $('[name=cate_id]').html(htmlStr)
-                // 通知 layui重新渲染表单 UI 结构
-                form.render()
+//                 // 调用模板引擎渲染分类的可选项
+//                 let htmlStr = template('tpl-cate', res)
+//                 // console.log(htmlStr)
+//                 $('[name=cate_id]').html(htmlStr)
+//                 // 通知 layui重新渲染表单 UI 结构
+//                 form.render()
 
-            }
+//             }
 
-        })
-    }
+//         })
+//     }
 
-    // 为筛选表单绑定 submit 事件
-    $('#form-search').on('submit', function (e) {
-        e.preventDefault()
-        // 获取表单中的值
-        let cate_id = $('[name=cate_id]').val()
-        let state = $('[name=state]').val()
-        // 为查询参数 q 中的对应属性赋值
-        q.cate_id = cate_id
-        q.state = state
-        // console.log(q)
-        // 根据筛选条件，重新渲染表格数据
-        initTable()
-    })
+//     // 为筛选表单绑定 submit 事件
+//     $('#form-search').on('submit', function (e) {
+//         e.preventDefault()
+//         // 获取表单中的值
+//         let cate_id = $('[name=cate_id]').val()
+//         let state = $('[name=state]').val()
+//         // 为查询参数 q 中的对应属性赋值
+//         q.cate_id = cate_id
+//         q.state = state
+//         // console.log(q)
+//         // 根据筛选条件，重新渲染表格数据
+//         initTable()
+//     })
+
+// // -------------------------------
+// // 自行添加
+
+//     let indexEdit = null
+//     // 通过代理的方式 为添加按钮 添加 点击事件
+//     $('#tb').on('click','#btn-edit',function(){
+//       indexEdit = layer.open({
+//         type : 1 ,
+//         area : ['500px','250px'],
+//         title: '编辑文章分类',
+//         content: $('#dialog-edit').html()
+//       })
+      
+  
+//       let id = $(this).attr('data-id')
+//       $.ajax({
+//         method : 'GET',
+//         url : `/my/article/cates/${id}`,
+//         success : res => {
+//           form.val('form-edit',res.data)
+//         }
+//       })
+//     })
+  
+  
+
+//     // 通过代理的方式 ，为确认编辑按钮添加 提交事件
+//     $('body').on('submit','#form-edit',function(e){
+//       e.preventDefault()
+//       $.ajax({
+//         method : 'POST',
+//         url : '/my/article/updatecate',
+//         data : $(this).serialize(),
+//         success : res => {
+//           console.log(res)
+//           if(res.status !== 0) return layer.msg('更新分类数据失败')
+//           layer.msg('更新分类数据成功')
+//           // 根据索引关闭弹出层
+//           layer.close(indexEdit)
+//           initArtCateList()
+//         }
+//       })
+//     })
+
+// --------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     // 定义渲染分页的方法
@@ -121,17 +189,35 @@ $(function () {
     }
 
 
+
     // 通过代理的形式，为删除按钮绑定点击事件
     $('#tb').on('click','#btn-delete',function(){
+        let len = $('#btn-delete').length
         let id = $(this).attr('data-id')
-        $.ajax({
-            method : 'GET',
-            url : `/my/article/delete/${id}`,
-            success : res => {
-                if (res.status !== 0 ) return layer.msg('删除失败')
-                layer.msg('删除成功')
-                initTable()
-            }
+        layer.confirm('确认删除?', {icon: 3, title:'提示'}, function(index){
+            //do something
+            
+            $.ajax({
+                method : 'GET',
+                url : `/my/article/delete/${id}`,
+                success : res => {
+                    if (res.status !== 0 ) return layer.msg('删除失败')
+                    layer.msg('删除成功')
+                    console.log(len)
+                    // 当数据删除完成后，需要判断当前这一页中，是否还有剩余的数据
+                    // 如果没有剩余的数据了，则让页码值 -1 之后，
+                    // 再重新调用 initTable 方法
+                    if (len === 1) {
+                        // 如果 len 等于 1，则证明删除完成后，页面上没有任何数据了
+                        // 页码值最小 是 1 
+                       q.pagenum  =  q.pagenum === 1 ?  q.pagenum = 1 : q.pagenum - 1 
+                    }
+                    console.log(q.pagenum)
+                    initTable()
+                }
+            })
+            layer.close(index)
+
         })
     })
 
